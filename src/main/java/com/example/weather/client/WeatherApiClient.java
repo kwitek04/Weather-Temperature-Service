@@ -14,8 +14,8 @@ import java.net.http.HttpResponse;
  */
 public class WeatherApiClient {
 
-    // Hardcoded URL with Wroclaw coordinates (task 1 requirement)
-    private static final String API_URL = "https://api.open-meteo.com/v1/forecast?latitude=51.1079&longitude=17.0385&current=temperature_2m";
+    // Base URL
+    private static final String BASE_URL = "https://api.open-meteo.com/v1/forecast";
 
     private final HttpClient httpClient;
     private final ObjectMapper objectMapper;
@@ -30,10 +30,14 @@ public class WeatherApiClient {
     }
 
     // Function which fetches current temperature
-    public double fetchTemperature() {
+    public double fetchTemperature(double latitude, double longitude) {
         try {
+            // Builds the full API URL using the given coordinates
+            String url = String.format("%s?latitude=%s&longitude=%s&current=temperature_2m",
+                    BASE_URL, latitude, longitude);
+
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(API_URL))
+                    .uri(URI.create(url))
                     .GET()
                     .build();
 
