@@ -1,4 +1,4 @@
-package com.example.weather.client;
+package com.example.weather.client.weather;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

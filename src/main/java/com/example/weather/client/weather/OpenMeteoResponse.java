@@ -1,4 +1,4 @@
-package com.example.weather.client;
+package com.example.weather.client.weather;
 
 /**
  * Data Transfer Object representing the root structure of the response

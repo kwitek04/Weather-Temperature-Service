@@ -3,7 +3,7 @@ package com.example.weather.handler;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
-import com.example.weather.client.WeatherApiClient;
+import com.example.weather.client.weather.WeatherApiClient;
 import com.example.weather.logic.TemperatureCategory;
 import com.example.weather.logic.TemperatureClassifier;
 
