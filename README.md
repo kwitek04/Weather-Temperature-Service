@@ -7,7 +7,7 @@ This repository contains an AWS Lambda function written in Java. The primary goa
 ## Key design decisions
 
 The application is structured into clear layers to keep the code simple, modular, and easy to maintain:
-* **WeatherHandler** – AWS Lambda entry point which orchestrates the flow.
+* **WeatherHandler** – AWS Lambda entry point which orchestrates the flow and handles incoming API Gateway events.
 * **WeatherApiClient**, **GeocodingApiClient** – responsible for HTTP communication with the external APIs.
 * **TemperatureClassifier** – business logic for temperature classification.
 * **WeatherResponse**, **OpenMeteoResponse**, **CurrentWeather**, **GeocodingResponse**, **GeocodingResult** – Java records acting as Data Transfer Objects for application and API responses.
@@ -34,3 +34,24 @@ To meet the initial requirement, the coordinates for Wrocław (latitude: 51.1079
 
 ### Task 2:
 The application was upgraded to accept user input via a `WeatherRequest` object containing a `cityName`. A new `GeocodingApiClient` was implemented to translate the requested city name into geographical coordinates. The `client` package was restructured into `weather` and `geocoding` subpackages to separate the two APIs. `WeatherHandler` was refactored so that it validates the input, calls the Geocoding API, passes the retrieved coordinates to the Weather API, and finally classifies the temperature before returning the final `WeatherResponse`.
+
+### Task 3:
+
+The Lambda function is available as a public HTTP endpoint using AWS Lambda Function URL.
+
+The `WeatherHandler` was updated to handle HTTP requests by using `APIGatewayProxyRequestEvent` and `APIGatewayProxyResponseEvent`. This makes it possible to read query parameters from the request and return proper HTTP responses with status codes as 200, 400, and 500.
+
+**Publicly accessible URL:**  
+https://fx7hnycqqrcs2vvwtafd77w2gq0umqrf.lambda-url.eu-north-1.on.aws/
+
+**GET parameter name:**  
+`city`
+
+**Example request:**
+https://fx7hnycqqrcs2vvwtafd77w2gq0umqrf.lambda-url.eu-north-1.on.aws/?city=Toronto
+
+**Example response:**
+{
+"temperature": 9.5,
+"category": "COLD"
+}
