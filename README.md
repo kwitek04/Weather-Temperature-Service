@@ -4,14 +4,22 @@
 
 This repository contains an AWS Lambda function written in Java. The primary goal of this service is to fetch the current temperature for a specific location using the Open-Meteo API, classify the temperature into a specific category and return the structured result as a JSON response.
 
-## Key design decisions
-
 The application is structured into clear layers to keep the code simple, modular, and easy to maintain:
 * **WeatherHandler** – AWS Lambda entry point which orchestrates the flow and handles incoming API Gateway events.
 * **WeatherApiClient**, **GeocodingApiClient** – responsible for HTTP communication with the external APIs.
 * **TemperatureClassifier** – business logic for temperature classification.
 * **WeatherResponse**, **OpenMeteoResponse**, **CurrentWeather**, **GeocodingResponse**, **GeocodingResult** – Java records acting as Data Transfer Objects for application and API responses.
 * **TemperatureCategory** – enum representing the specific results of temperature classification.
+
+## Application flow
+1. The user sends an HTTP request with a city name as a query parameter (e.g. `?city=Toronto`).
+2. The `WeatherHandler` receives the request and validates the input.
+3. The `GeocodingApiClient` retrieves latitude and longitude for the given city.
+4. The `WeatherApiClient` uses these coordinates to fetch the current temperature from the Open-Meteo API.
+5. The `TemperatureClassifier` assigns a category based on the temperature value.
+6. The result is returned as a JSON response containing the temperature and its category.
+
+## Key design decisions
 
 The `WeatherHandler` only coordinates the flow and does not contain any business logic.
 
@@ -26,6 +34,8 @@ The solution utilizes Java's built-in `HttpClient` to call the Open-Meteo API. T
 The application can be tested without calling the real API by replacing the `WeatherApiClient` with a mock implementation. For example, using a framework like Mockito, it is possible to simulate API responses and return predefined temperature values. This allows testing how the handler behaves without making real HTTP requests.
 
 The `TemperatureClassifier` can be tested separately because it is independent from the API layer. You can simply pass different temperature values, and check if the correct `TemperatureCategory` is returned.
+
+Error handling is implemented at the handler level to return HTTP status codes and JSON error responses.
 
 ## Tasks implementation
 
@@ -55,3 +65,15 @@ https://fx7hnycqqrcs2vvwtafd77w2gq0umqrf.lambda-url.eu-north-1.on.aws/?city=Toro
 "temperature": 9.5,
 "category": "COLD"
 }
+
+### Task 4: Design Reflection
+
+The current design separates responsibilities into smaller classes, which makes the code easy to read and understand. Each class has a clear role, and the overall flow is straightforward.
+
+However, the solution is not very flexible when it comes to adding new weather providers. The `WeatherHandler` directly creates specific client implementations, which makes it tightly coupled to one provider. It also depends on provider-specific DTOs. Because of this, adding another provider would require modifying the existing code.
+
+If I had more time, I would create an interface to define a common way of fetching weather data. Different providers could then implement this interface.
+
+I would also use dependency injection to pass the selected provider to the handler instead of creating it directly. Additionally, I would introduce internal DTOs that are independent from any specific API.
+
+This would make the application easier to extend. Adding a new provider would only require creating a new implementation, without changing the existing logic.
