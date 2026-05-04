@@ -39,13 +39,13 @@ Error handling is implemented at the handler level to return HTTP status codes a
 
 ## Tasks implementation
 
-### Task 1:
+### Task 1: Basic Implementation
 To meet the initial requirement, the coordinates for Wrocław (latitude: 51.1079, longitude: 17.0385) are temporarily hardcoded in the `WeatherHandler`. At the same time, the `WeatherApiClient` is designed to accept any coordinates, so it can be easily reused when adding support for dynamic input in the next step.
 
-### Task 2:
+### Task 2: Extension
 The application was upgraded to accept user input via a `WeatherRequest` object containing a `cityName`. A new `GeocodingApiClient` was implemented to translate the requested city name into geographical coordinates. The `client` package was restructured into `weather` and `geocoding` subpackages to separate the two APIs. `WeatherHandler` was refactored so that it validates the input, calls the Geocoding API, passes the retrieved coordinates to the Weather API, and finally classifies the temperature before returning the final `WeatherResponse`.
 
-### Task 3:
+### Task 3: Endpoint Exposure
 
 The Lambda function is available as a public HTTP endpoint using AWS Lambda Function URL.
 
